@@ -12,43 +12,46 @@
 <body>
     <form id="msgForm">
         <h3>Send a Message</h3>
-        <input name="name" placeholder="Your Name" required>
-        <textarea name="message" placeholder="Your Message" rows="4" required></textarea>
-        <button type="submit">Send to Sheet</button>
+        <!-- The 'name' attribute here MUST match the script -->
+        <input name="name" id="nameInput" placeholder="Your Name" required>
+        <textarea name="message" id="messageInput" placeholder="Your Message" rows="4" required></textarea>
+        <button type="submit" id="submitBtn">Send to Sheet</button>
     </form>
 
     <script>
-        // Replace this with your actual Web App URL
         const URL = 'https://script.google.com/macros/s/AKfycbz2LpsxzDvZnwz7RcanzDcYIDSGqx225QcJSuZXuAcigk9mYuyAGyzVcN6LuSUk6PyJ/exec';
         
-        document.getElementById('msgForm').onsubmit = async (e) => {
+        document.getElementById('msgForm').onsubmit = function(e) {
             e.preventDefault();
-            const btn = e.target.querySelector('button');
-            const originalText = btn.innerText;
+            const btn = document.getElementById('submitBtn');
             btn.innerText = 'Sending...';
             btn.disabled = true;
 
-            // Use FormData to send data - this is the most reliable way for Google Apps Script
-            const formData = new FormData(e.target);
+            // Create the data string
+            const name = document.getElementById('nameInput').value;
+            const message = document.getElementById('messageInput').value;
             
-            try {
-                // We use 'no-cors' because Google Apps Script redirects, 
-                // but we send it as a URLSearchParams to ensure it's readable.
-                await fetch(URL, {
-                    method: 'POST',
-                    mode: 'no-cors', 
-                    body: new URLSearchParams(formData)
-                });
-                
+            // We use a simple fetch with URLSearchParams which GAS loves
+            fetch(URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({
+                    'name': name,
+                    'message': message
+                })
+            })
+            .then(() => {
                 alert("Sent successfully!");
-                e.target.reset();
-            } catch (error) {
-                console.error('Error!', error.message);
-                alert("Something went wrong. Please try again.");
-            } finally {
-                btn.innerText = originalText;
+                document.getElementById('msgForm').reset();
+            })
+            .catch(err => {
+                alert("Error: " + err.message);
+            })
+            .finally(() => {
+                btn.innerText = 'Send to Sheet';
                 btn.disabled = false;
-            }
+            });
         };
     </script>
 </body>
