@@ -18,24 +18,37 @@
     </form>
 
     <script>
+        // Replace this with your actual Web App URL
         const URL = 'https://script.google.com/macros/s/AKfycbz2LpsxzDvZnwz7RcanzDcYIDSGqx225QcJSuZXuAcigk9mYuyAGyzVcN6LuSUk6PyJ/exec';
+        
         document.getElementById('msgForm').onsubmit = async (e) => {
             e.preventDefault();
             const btn = e.target.querySelector('button');
+            const originalText = btn.innerText;
             btn.innerText = 'Sending...';
+            btn.disabled = true;
+
+            // Use FormData to send data - this is the most reliable way for Google Apps Script
+            const formData = new FormData(e.target);
             
-            await fetch(URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                body: JSON.stringify({
-                    name: e.target.name.value,
-                    message: e.target.message.value
-                })
-            });
-            
-            alert("Sent successfully!");
-            btn.innerText = 'Send Message';
-            e.target.reset();
+            try {
+                // We use 'no-cors' because Google Apps Script redirects, 
+                // but we send it as a URLSearchParams to ensure it's readable.
+                await fetch(URL, {
+                    method: 'POST',
+                    mode: 'no-cors', 
+                    body: new URLSearchParams(formData)
+                });
+                
+                alert("Sent successfully!");
+                e.target.reset();
+            } catch (error) {
+                console.error('Error!', error.message);
+                alert("Something went wrong. Please try again.");
+            } finally {
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }
         };
     </script>
 </body>
