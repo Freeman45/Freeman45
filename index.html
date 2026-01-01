@@ -1,71 +1,98 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Send Anonymous Message</title>
-  <style>
-    body {
-      font-family: Arial;
-      background: url('https://effective-gold-2f6nrnwang.edgeone.app/20251231_212639.png') no-repeat center center fixed;
-      background-size: cover;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
-    .container {
-      background: rgba(255,255,255,0.9);
-      padding: 25px 30px;
-      border-radius: 12px;
-      width: 100%;
-      max-width: 400px;
-      text-align: center;
-    }
-    h2 { margin-bottom: 15px; }
-    .warning { color: red; font-weight: bold; margin-bottom: 20px; }
-    input, textarea {
-      width: 100%; padding: 12px; margin: 10px 0;
-      border-radius: 8px; border: 1px solid #ccc;
-    }
-    button {
-      width: 100%; padding: 12px; border: none; border-radius: 8px;
-      background: #2575fc; color: white; font-size: 16px; cursor: pointer;
-    }
-    button:hover { background: #6a11cb; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Send Anonymous Message</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: url('https://effective-gold-2f6nrnwang.edgeone.app/20251231_212639.png') no-repeat center center fixed;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+.container {
+    background: rgba(255,255,255,0.9);
+    padding: 25px 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+h2 { margin-bottom: 15px; }
+.warning { color: red; font-weight: bold; margin-bottom: 20px; }
+input, textarea {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    resize: vertical;
+}
+textarea { min-height: 120px; }
+button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background: #6a11cb;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+button:hover { background: #2575fc; }
+.success { color: green; font-weight: bold; margin-bottom: 20px; }
+</style>
 </head>
 <body>
 <div class="container">
-  <h2>Send a Message</h2>
-  <div class="warning">Sa'eed won't know your name!</div>
-  <form id="msgForm">
-    <input type="text" name="name" placeholder="Your name (optional)">
+<h2>Send a Message</h2>
+<div class="warning">Sa'eed won't know your name!</div>
+<form id="anonForm">
+    <input type="text" name="name" placeholder="Enter your name" required>
     <textarea name="message" placeholder="Type your message..." required></textarea>
     <button type="submit">Send</button>
-  </form>
-  <div id="status"></div>
+</form>
+<div id="feedback"></div>
 </div>
 
 <script>
-const form = document.getElementById('msgForm');
-form.addEventListener('submit', e => {
-  e.preventDefault();
-  const formData = new FormData(form);
-  const params = new URLSearchParams(formData).toString();
+const form = document.getElementById("anonForm");
+const feedback = document.getElementById("feedback");
 
-  fetch('', {
-    method: 'POST',
-    body: params
-  })
-  .then(res => res.text())
-  .then(text => {
-    document.getElementById('status').innerText = text;
-    if(text === "Success") form.reset();
-  })
-  .catch(err => {
-    document.getElementById('status').innerText = "Error sending message";
-  });
+form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    feedback.textContent = ""; // reset feedback
+
+    const data = new FormData(form);
+    const params = new URLSearchParams(data).toString();
+
+    try {
+        const res = await fetch("https://script.google.com/macros/s/AKfycbxyl3rdTRh1p6u4n2V7wRT_Ng4AXXO7vuebaypExa3pSELXomyFQBGao0UeXoG8-2BX/exec", {
+            method: "POST",
+            body: params,
+            headers: { "Content-Type": "application/x-www-form-urlencoded" }
+        });
+
+        if (res.ok) {
+            feedback.textContent = "Message sent successfully!";
+            feedback.className = "success";
+            form.reset();
+        } else {
+            feedback.textContent = "Failed to send message.";
+            feedback.className = "warning";
+        }
+    } catch (err) {
+        feedback.textContent = "Error: " + err.message;
+        feedback.className = "warning";
+    }
 });
 </script>
 </body>
