@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Send Anonymous Message</title>
+<title>Send a Message</title>
 <style>
 body {
     font-family: Arial, sans-serif;
@@ -26,72 +26,45 @@ body {
 }
 h2 { margin-bottom: 15px; }
 .warning { color: red; font-weight: bold; margin-bottom: 20px; }
-input, textarea {
-    width: 100%;
-    padding: 12px;
-    margin: 10px 0;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    font-size: 14px;
-    resize: vertical;
-}
+input, textarea { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #ccc; font-size: 14px; resize: vertical; }
 textarea { min-height: 120px; }
-button {
-    width: 100%;
-    padding: 12px;
-    border: none;
-    border-radius: 8px;
-    background: #6a11cb;
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
-    transition: 0.3s;
-}
+button { width: 100%; padding: 12px; border: none; border-radius: 8px; background: #6a11cb; color: white; font-size: 16px; cursor: pointer; transition: 0.3s; }
 button:hover { background: #2575fc; }
 .success { color: green; font-weight: bold; margin-bottom: 20px; }
 </style>
 </head>
 <body>
 <div class="container">
-<h2>Send a Message</h2>
+<h2>Send an Anonymous Message</h2>
 <div class="warning">Sa'eed won't know your name!</div>
-<form id="anonForm">
-    <input type="text" name="name" placeholder="Enter your name" required>
-    <textarea name="message" placeholder="Type your message..." required></textarea>
+<form id="messageForm">
+    <input type="text" id="name" placeholder="Enter your name to proceed" required>
+    <textarea id="message" placeholder="Type your message..." required></textarea>
     <button type="submit">Send</button>
+    <div id="status"></div>
 </form>
-<div id="feedback"></div>
 </div>
 
 <script>
-const form = document.getElementById("anonForm");
-const feedback = document.getElementById("feedback");
-
-form.addEventListener("submit", async (e) => {
+const form = document.getElementById('messageForm');
+form.addEventListener('submit', async function(e) {
     e.preventDefault();
-    feedback.textContent = ""; // reset feedback
+    const name = document.getElementById('name').value.trim();
+    const message = document.getElementById('message').value.trim();
+    const status = document.getElementById('status');
 
-    const data = new FormData(form);
-    const params = new URLSearchParams(data).toString();
+    if (!name || !message) return;
 
+    const url = "https://script.google.com/macros/s/AKfycbz2LpsxzDvZnwz7RcanzDcYIDSGqx225QcJSuZXuAcigk9mYuyAGyzVcN6LuSUk6PyJ/exec";
     try {
-        const res = await fetch("https://script.google.com/macros/s/AKfycbxyl3rdTRh1p6u4n2V7wRT_Ng4AXXO7vuebaypExa3pSELXomyFQBGao0UeXoG8-2BX/exec", {
-            method: "POST",
-            body: params,
-            headers: { "Content-Type": "application/x-www-form-urlencoded" }
-        });
-
-        if (res.ok) {
-            feedback.textContent = "Message sent successfully!";
-            feedback.className = "success";
-            form.reset();
-        } else {
-            feedback.textContent = "Failed to send message.";
-            feedback.className = "warning";
-        }
-    } catch (err) {
-        feedback.textContent = "Error: " + err.message;
-        feedback.className = "warning";
+        const res = await fetch(`${url}?name=${encodeURIComponent(name)}&message=${encodeURIComponent(message)}`);
+        const text = await res.text();
+        status.textContent = text;
+        status.className = 'success';
+        form.reset();
+    } catch(err) {
+        status.textContent = "Failed to send message!";
+        status.className = 'warning';
     }
 });
 </script>
