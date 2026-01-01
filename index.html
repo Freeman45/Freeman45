@@ -1,35 +1,43 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Anonymous Message</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; padding: 50px; background: #f4f7f6; }
+        form { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); width: 300px; }
+        input, textarea { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+        button { width: 100%; padding: 10px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #218838; }
+    </style>
 </head>
 <body>
     <form id="msgForm">
-        <input name="name" placeholder="Name" required><br><br>
-        <textarea name="message" placeholder="Message" required></textarea><br><br>
-        <button type="submit">Send Message</button>
+        <h3>Send a Message</h3>
+        <input name="name" placeholder="Your Name" required>
+        <textarea name="message" placeholder="Your Message" rows="4" required></textarea>
+        <button type="submit">Send to Sheet</button>
     </form>
 
     <script>
         const URL = 'https://script.google.com/macros/s/AKfycbz2LpsxzDvZnwz7RcanzDcYIDSGqx225QcJSuZXuAcigk9mYuyAGyzVcN6LuSUk6PyJ/exec';
-        
         document.getElementById('msgForm').onsubmit = async (e) => {
             e.preventDefault();
-            const data = {
-                name: e.target.name.value,
-                message: e.target.message.value
-            };
+            const btn = e.target.querySelector('button');
+            btn.innerText = 'Sending...';
             
             await fetch(URL, {
                 method: 'POST',
                 mode: 'no-cors',
-                body: JSON.stringify(data)
+                body: JSON.stringify({
+                    name: e.target.name.value,
+                    message: e.target.message.value
+                })
             });
             
-            alert("Message sent! Check your Google Sheet now.");
+            alert("Sent successfully!");
+            btn.innerText = 'Send Message';
             e.target.reset();
         };
     </script>
 </body>
 </html>
+
