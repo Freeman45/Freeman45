@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Anonymous Form</title>
+    <meta charset="UTF-8">
+    <title>Anonymous Message</title>
 </head>
 <body>
     <form id="msgForm">
@@ -26,7 +27,7 @@
                 body: JSON.stringify(data)
             });
             
-            alert("Sent! Check your Google Sheet now.");
+            alert("Message sent! Check your Google Sheet now.");
             e.target.reset();
         };
     </script>
