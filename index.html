@@ -2,9 +2,42 @@
 <html>
 <head>
     <style>
-        body { font-family: 'Courier New', monospace; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; background: #050505; color: #ff0000; margin: 0; }
-        img { width: 120px; border-radius: 50%; border: 2px solid #ff0000; box-shadow: 0 0 15px #ff0000; margin-bottom: 20px; }
-        form { background: #111; padding: 30px; border-radius: 12px; border: 1px solid #ff0000; box-shadow: 0 0 20px rgba(255, 0, 0, 0.3); width: 320px; }
+        body { 
+            font-family: 'Courier New', monospace; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            min-height: 100vh; 
+            background: #050505; 
+            color: #ff0000; 
+            margin: 0; 
+            overflow: hidden; 
+        }
+        
+        /* Background Rain */
+        .pfp-rain {
+            position: fixed;
+            top: -50px;
+            width: 30px;
+            height: 30px;
+            background-image: url('https://i.ibb.co/B2PwTgdQ/20250910-013431.png');
+            background-size: cover;
+            border-radius: 50%;
+            border: 1px solid #ff0000;
+            z-index: -1;
+            opacity: 0.6;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0.8; }
+            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* UI Styling */
+        .profile-main { width: 120px; border-radius: 50%; border: 2px solid #ff0000; box-shadow: 0 0 15px #ff0000; margin-bottom: 20px; position: relative; z-index: 10; }
+        form { background: rgba(17, 17, 17, 0.9); padding: 30px; border-radius: 12px; border: 1px solid #ff0000; box-shadow: 0 0 20px rgba(255, 0, 0, 0.3); width: 320px; position: relative; z-index: 10; backdrop-filter: blur(5px); }
         h3 { text-align: center; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 10px #ff0000; }
         input, textarea { width: 100%; padding: 12px; margin-bottom: 15px; background: #1a1a1a; border: 1px solid #444; border-radius: 4px; color: #fff; box-sizing: border-box; outline: none; transition: 0.3s; }
         input:focus, textarea:focus { border-color: #ff0000; box-shadow: 0 0 10px #ff0000; }
@@ -13,7 +46,8 @@
     </style>
 </head>
 <body>
-    <img src="https://i.ibb.co/B2PwTgdQ/20250910-013431.png" alt="Profile">
+    <div id="rain-container"></div>
+    <img src="https://i.ibb.co/B2PwTgdQ/20250910-013431.png" alt="Profile" class="profile-main">
     <form id="msgForm">
         <h3>System Access</h3>
         <input name="name" id="nameInput" placeholder="ID / NAME" required>
@@ -22,6 +56,20 @@
     </form>
 
     <script>
+        // Create falling background icons
+        function createRain() {
+            const container = document.getElementById('rain-container');
+            for (let i = 0; i < 20; i++) {
+                const drop = document.createElement('div');
+                drop.className = 'pfp-rain';
+                drop.style.left = Math.random() * 100 + 'vw';
+                drop.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                drop.style.animationDelay = Math.random() * 5 + 's';
+                container.appendChild(drop);
+            }
+        }
+        createRain();
+
         const URL = 'https://script.google.com/macros/s/AKfycbz2LpsxzDvZnwz7RcanzDcYIDSGqx225QcJSuZXuAcigk9mYuyAGyzVcN6LuSUk6PyJ/exec';
         document.getElementById('msgForm').onsubmit = function(e) {
             e.preventDefault();
