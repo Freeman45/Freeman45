@@ -15,56 +15,60 @@
             overflow: hidden; 
         }
         
-        /* Background Rain */
         .pfp-rain {
             position: fixed;
-            top: -50px;
-            width: 30px;
-            height: 30px;
+            top: -60px;
+            width: 40px;
+            height: 40px;
             background-image: url('https://i.ibb.co/B2PwTgdQ/20250910-013431.png');
             background-size: cover;
             border-radius: 50%;
-            border: 1px solid #ff0000;
+            /* Bolder Stroke & Shadow */
+            border: 3px solid #ff0000;
+            box-shadow: 0 0 15px #ff0000, 0 0 30px rgba(255, 0, 0, 0.5);
             z-index: -1;
-            opacity: 0.6;
+            opacity: 0.8;
             animation: fall linear infinite;
         }
 
+        /* Sparkle/Pulse effect */
         @keyframes fall {
-            0% { transform: translateY(0) rotate(0deg); opacity: 0.8; }
-            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+            0% { transform: translateY(0) rotate(0deg) scale(0.8); opacity: 0; }
+            10% { opacity: 1; }
+            50% { box-shadow: 0 0 25px #ff0000, 0 0 50px #ff0000; }
+            90% { opacity: 1; }
+            100% { transform: translateY(110vh) rotate(360deg) scale(0.8); opacity: 0; }
         }
 
-        /* UI Styling */
-        .profile-main { width: 120px; border-radius: 50%; border: 2px solid #ff0000; box-shadow: 0 0 15px #ff0000; margin-bottom: 20px; position: relative; z-index: 10; }
-        form { background: rgba(17, 17, 17, 0.9); padding: 30px; border-radius: 12px; border: 1px solid #ff0000; box-shadow: 0 0 20px rgba(255, 0, 0, 0.3); width: 320px; position: relative; z-index: 10; backdrop-filter: blur(5px); }
-        h3 { text-align: center; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 10px #ff0000; }
-        input, textarea { width: 100%; padding: 12px; margin-bottom: 15px; background: #1a1a1a; border: 1px solid #444; border-radius: 4px; color: #fff; box-sizing: border-box; outline: none; transition: 0.3s; }
-        input:focus, textarea:focus { border-color: #ff0000; box-shadow: 0 0 10px #ff0000; }
-        button { width: 100%; padding: 12px; background: transparent; color: #ff0000; border: 2px solid #ff0000; border-radius: 4px; cursor: pointer; font-weight: bold; text-transform: uppercase; transition: 0.3s; }
-        button:hover { background: #ff0000; color: #000; box-shadow: 0 0 20px #ff0000; }
+        .profile-main { width: 120px; border-radius: 50%; border: 3px solid #ff0000; box-shadow: 0 0 25px #ff0000; margin-bottom: 20px; position: relative; z-index: 10; }
+        form { background: rgba(10, 10, 10, 0.95); padding: 30px; border-radius: 12px; border: 2px solid #ff0000; box-shadow: 0 0 30px rgba(255, 0, 0, 0.4); width: 320px; position: relative; z-index: 10; backdrop-filter: blur(8px); }
+        h3 { text-align: center; text-transform: uppercase; letter-spacing: 1px; text-shadow: 0 0 15px #ff0000; font-size: 15px; margin-top: 0; }
+        input, textarea { width: 100%; padding: 12px; margin-bottom: 15px; background: #000; border: 1px solid #444; border-radius: 4px; color: #fff; box-sizing: border-box; outline: none; transition: 0.3s; }
+        input:focus, textarea:focus { border-color: #ff0000; box-shadow: 0 0 15px #ff0000; }
+        button { width: 100%; padding: 12px; background: #ff0000; color: #000; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; text-transform: uppercase; transition: 0.3s; }
+        button:hover { background: #b30000; box-shadow: 0 0 25px #ff0000; color: #fff; }
     </style>
 </head>
 <body>
     <div id="rain-container"></div>
     <img src="https://i.ibb.co/B2PwTgdQ/20250910-013431.png" alt="Profile" class="profile-main">
     <form id="msgForm">
-        <h3>System Access</h3>
+        <h3>FREEGUY doesn’t see your name</h3>
         <input name="name" id="nameInput" placeholder="ID / NAME" required>
         <textarea name="message" id="messageInput" placeholder="ENCRYPT MESSAGE..." rows="4" required></textarea>
         <button type="submit" id="submitBtn">Transmit Data</button>
     </form>
 
     <script>
-        // Create falling background icons
         function createRain() {
             const container = document.getElementById('rain-container');
-            for (let i = 0; i < 20; i++) {
+            for (let i = 0; i < 15; i++) {
                 const drop = document.createElement('div');
                 drop.className = 'pfp-rain';
                 drop.style.left = Math.random() * 100 + 'vw';
-                drop.style.animationDuration = (Math.random() * 3 + 2) + 's';
-                drop.style.animationDelay = Math.random() * 5 + 's';
+                // Slower fall duration (8-12 seconds)
+                drop.style.animationDuration = (Math.random() * 4 + 8) + 's';
+                drop.style.animationDelay = (Math.random() * 10) + 's';
                 container.appendChild(drop);
             }
         }
@@ -98,3 +102,4 @@
     </script>
 </body>
 </html>
+
