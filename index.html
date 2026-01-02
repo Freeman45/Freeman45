@@ -2,54 +2,48 @@
 <html>
 <head>
     <style>
-        body { font-family: sans-serif; display: flex; justify-content: center; padding: 50px; background: #f4f7f6; }
-        form { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); width: 300px; }
-        input, textarea { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
-        button { width: 100%; padding: 10px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; }
-        button:hover { background: #218838; }
+        body { font-family: 'Courier New', monospace; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; background: #050505; color: #ff0000; margin: 0; }
+        img { width: 120px; border-radius: 50%; border: 2px solid #ff0000; box-shadow: 0 0 15px #ff0000; margin-bottom: 20px; }
+        form { background: #111; padding: 30px; border-radius: 12px; border: 1px solid #ff0000; box-shadow: 0 0 20px rgba(255, 0, 0, 0.3); width: 320px; }
+        h3 { text-align: center; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 10px #ff0000; }
+        input, textarea { width: 100%; padding: 12px; margin-bottom: 15px; background: #1a1a1a; border: 1px solid #444; border-radius: 4px; color: #fff; box-sizing: border-box; outline: none; transition: 0.3s; }
+        input:focus, textarea:focus { border-color: #ff0000; box-shadow: 0 0 10px #ff0000; }
+        button { width: 100%; padding: 12px; background: transparent; color: #ff0000; border: 2px solid #ff0000; border-radius: 4px; cursor: pointer; font-weight: bold; text-transform: uppercase; transition: 0.3s; }
+        button:hover { background: #ff0000; color: #000; box-shadow: 0 0 20px #ff0000; }
     </style>
 </head>
 <body>
+    <img src="https://i.ibb.co/B2PwTgdQ/20250910-013431.png" alt="Profile">
     <form id="msgForm">
-        <h3>Send a Message</h3>
-        <!-- The 'name' attribute here MUST match the script -->
-        <input name="name" id="nameInput" placeholder="Your Name" required>
-        <textarea name="message" id="messageInput" placeholder="Your Message" rows="4" required></textarea>
-        <button type="submit" id="submitBtn">Send to Sheet</button>
+        <h3>System Access</h3>
+        <input name="name" id="nameInput" placeholder="ID / NAME" required>
+        <textarea name="message" id="messageInput" placeholder="ENCRYPT MESSAGE..." rows="4" required></textarea>
+        <button type="submit" id="submitBtn">Transmit Data</button>
     </form>
 
     <script>
         const URL = 'https://script.google.com/macros/s/AKfycbz2LpsxzDvZnwz7RcanzDcYIDSGqx225QcJSuZXuAcigk9mYuyAGyzVcN6LuSUk6PyJ/exec';
-        
         document.getElementById('msgForm').onsubmit = function(e) {
             e.preventDefault();
             const btn = document.getElementById('submitBtn');
-            btn.innerText = 'Sending...';
+            btn.innerText = 'TRANSMITTING...';
             btn.disabled = true;
-
-            // Create the data string
-            const name = document.getElementById('nameInput').value;
-            const message = document.getElementById('messageInput').value;
-            
-            // We use a simple fetch with URLSearchParams which GAS loves
             fetch(URL, {
                 method: 'POST',
                 mode: 'no-cors',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: new URLSearchParams({
-                    'name': name,
-                    'message': message
+                    'name': document.getElementById('nameInput').value,
+                    'message': document.getElementById('messageInput').value
                 })
             })
             .then(() => {
-                alert("Sent successfully!");
+                alert("Upload Complete.");
                 document.getElementById('msgForm').reset();
             })
-            .catch(err => {
-                alert("Error: " + err.message);
-            })
+            .catch(err => alert("System Failure: " + err.message))
             .finally(() => {
-                btn.innerText = 'Send to Sheet';
+                btn.innerText = 'Transmit Data';
                 btn.disabled = false;
             });
         };
