@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <title>Smart Homie - Join the Tester Waitlist</title>
     <style>
         body { 
             font-family: 'Courier New', monospace; 
@@ -40,6 +41,30 @@
 
         .profile-main { width: 120px; border-radius: 50%; border: 3px solid #ff0000; box-shadow: 0 0 25px #ff0000; margin-bottom: 20px; position: relative; z-index: 10; }
         
+        .content-container {
+            max-width: 450px;
+            text-align: center;
+            padding: 20px;
+            margin-bottom: 20px;
+            background: rgba(10, 10, 10, 0.8);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 0, 0, 0.3);
+            z-index: 10;
+        }
+
+        .content-container h1 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px #ff0000;
+        }
+
+        .content-container p {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #ccc;
+            margin-bottom: 10px;
+        }
+
         form { 
             background: rgba(10, 10, 10, 0.95); 
             padding: 30px; 
@@ -90,8 +115,8 @@
         }
 
         h3 { text-align: center; text-transform: uppercase; letter-spacing: 1px; text-shadow: 0 0 15px #ff0000; font-size: 15px; margin-top: 0; }
-        input, textarea { width: 100%; padding: 12px; margin-bottom: 15px; background: #000; border: 1px solid #444; border-radius: 4px; color: #fff; box-sizing: border-box; outline: none; transition: 0.3s; }
-        input:focus, textarea:focus { border-color: #ff0000; box-shadow: 0 0 15px #ff0000; }
+        input, select { width: 100%; padding: 12px; margin-bottom: 15px; background: #000; border: 1px solid #444; border-radius: 4px; color: #fff; box-sizing: border-box; outline: none; transition: 0.3s; font-family: 'Courier New', monospace; }
+        input:focus, select:focus { border-color: #ff0000; box-shadow: 0 0 15px #ff0000; }
         button { width: 100%; padding: 12px; background: #ff0000; color: #000; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; text-transform: uppercase; transition: 0.3s; }
         button:hover { background: #b30000; box-shadow: 0 0 25px #ff0000; color: #fff; }
     </style>
@@ -99,13 +124,26 @@
 <body>
     <div id="rain-container"></div>
     <img src="https://i.ibb.co/B2PwTgdQ/20250910-013431.png" alt="Profile" class="profile-main">
-    <form id="msgForm">
+    
+    <div class="content-container">
+        <h1>I'm Launching Smart Homie</h1>
+        <p>I built Smart Homie because I was tired of juggling busywork and worrying about device security. With your permission, it replies to client messages, handles everyday tasks on your device, and keeps you focused on what matters.</p>
+        <p>If your device goes missing, Smart Homie pinpoints its location and alerts your trusted contacts immediately. If it's stolen, it locks down every service, backs up your data, and protects your privacy.</p>
+    </div>
+
+    <form id="waitlistForm">
         <div id="flash-bg" class="flash-bg"></div>
         <canvas id="lightning-canvas"></canvas>
-        <h3>FREEGUY doesn’t see your name</h3>
-        <input name="name" id="nameInput" placeholder="ID / NAME" required>
-        <textarea name="message" id="messageInput" placeholder="ENCRYPT MESSAGE..." rows="4" required></textarea>
-        <button type="submit" id="submitBtn">Transmit Data</button>
+        <h3>Join the Tester Waitlist</h3>
+        <input type="text" name="name" id="nameInput" placeholder="YOUR NAME" required>
+        <input type="email" name="email" id="emailInput" placeholder="EMAIL ADDRESS" required>
+        <select name="device" id="deviceSelect" required>
+            <option value="" disabled selected>PRIMARY DEVICE</option>
+            <option value="android">Android</option>
+            <option value="ios">iOS / iPhone</option>
+            <option value="other">Other</option>
+        </select>
+        <button type="submit" id="submitBtn">Request Access</button>
     </form>
 
     <script>
@@ -128,7 +166,7 @@
         const flashBg = document.getElementById('flash-bg');
 
         function resizeCanvas() {
-            const form = document.getElementById('msgForm');
+            const form = document.getElementById('waitlistForm');
             canvas.width = form.offsetWidth;
             canvas.height = form.offsetHeight;
         }
@@ -175,28 +213,35 @@
             setInterval(createLightning, 5000);
         }, 1000);
 
+        // Google Script URL from original file
         const URL = 'https://script.google.com/macros/s/AKfycbz2LpsxzDvZnwz7RcanzDcYIDSGqx225QcJSuZXuAcigk9mYuyAGyzVcN6LuSUk6PyJ/exec';
-        document.getElementById('msgForm').onsubmit = function(e) {
+        
+        document.getElementById('waitlistForm').onsubmit = function(e) {
             e.preventDefault();
             const btn = document.getElementById('submitBtn');
-            btn.innerText = 'TRANSMITTING...';
+            btn.innerText = 'PROCESSING...';
             btn.disabled = true;
+            
+            const formData = new URLSearchParams({
+                'name': document.getElementById('nameInput').value,
+                'email': document.getElementById('emailInput').value,
+                'device': document.getElementById('deviceSelect').value,
+                'source': 'Smart Homie Waitlist'
+            });
+
             fetch(URL, {
                 method: 'POST',
                 mode: 'no-cors',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams({
-                    'name': document.getElementById('nameInput').value,
-                    'message': document.getElementById('messageInput').value
-                })
+                body: formData
             })
             .then(() => {
-                alert("Upload Complete.");
-                document.getElementById('msgForm').reset();
+                alert("You've been added to the waitlist. We'll contact you soon.");
+                document.getElementById('waitlistForm').reset();
             })
             .catch(err => alert("System Failure: " + err.message))
             .finally(() => {
-                btn.innerText = 'Transmit Data';
+                btn.innerText = 'Request Access';
                 btn.disabled = false;
             });
         };
